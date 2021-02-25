@@ -11,6 +11,13 @@ server.on('request',(request:IncomingMessage,response:ServerResponse)=>{
     const {method,url:path,headers} = request
     console.log(path)
     const {pathname,search} = url.parse(path)
+
+    if(method === 'GET'){
+        response.statusCode = 405;
+        response.end()
+        return;
+    }
+
             let filename = pathname.substr(1)
             if(filename === ''){
                 filename = 'index.html'
