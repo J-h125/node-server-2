@@ -6,13 +6,14 @@ import * as url from 'url';
 
 const server = http.createServer();
 const publicDir = p.resolve(__dirname,'public')  //__dirname 当前文件所在目录
+const cacheAge = 3600*24*365
 
 server.on('request',(request:IncomingMessage,response:ServerResponse)=>{
     const {method,url:path,headers} = request
     console.log(path)
     const {pathname,search} = url.parse(path)
 
-    if(method === 'GET'){
+    if(method !== 'GET'){
         response.statusCode = 405;
         response.end()
         return;
@@ -38,7 +39,8 @@ server.on('request',(request:IncomingMessage,response:ServerResponse)=>{
                         response.end('服务器繁忙')
                     }
                 }else {
-
+                    //返回文件内容
+                    response.setHeader('Cache-Control',`public, max-age=${cacheAge}`)
                     response.end(data)
                 }
 
